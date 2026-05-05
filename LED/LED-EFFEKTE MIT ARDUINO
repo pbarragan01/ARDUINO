@@ -1,1 +1,77 @@
+int leds [] = {2,3,4,5,6,7,8,9};
+int total = 8;
 
+int modo = 0;
+unsigned long ultimoCambio = 0;
+
+void setup(){
+  // Alle LED‑Pins als Ausgänge konfigurieren
+  for(int i=0; i<total; i++){
+    pinMode (leds[i], OUTPUT);
+  }
+}
+
+void loop(){
+  // Modus alle 10 Sekunden wechseln
+  if (millis() - ultimoCambio > 10000){
+    modo++;
+    if (modo > 2) modo = 0;
+    ultimoCambio = millis ();
+  }
+
+  // Effekt je nach Modus ausführen
+  if (modo == 0) efectoCylon();
+  else if (modo == 1) efectoExplosion();
+  else if (modo == 2) efectoAleatorio();
+}
+
+// Effekt 1: Cylon‑Bewegung (hin und zurück)
+void efectoCylon() {
+  // Vorwärts
+  for(int i=0; i<total; i++){
+    encenderSolo (i);
+    delay(80);
+  }
+  // Rückwärts (ohne Endpunkte doppelt)
+  for(int i=total-2; i>0; i--){
+    encenderSolo(i);
+    delay (80);
+  }
+}
+
+// Effekt 2: Explosion vom Zentrum nach außen
+void efectoExplosion(){
+  int centro = total / 2;
+
+  // LEDs paarweise vom Zentrum nach außen einschalten
+  for(int i=0; i<=centro; i++){
+    digitalWrite (leds[centro+i], HIGH);
+    digitalWrite (leds[centro-i], HIGH);
+    delay(100);
+  }
+
+  delay(200);
+
+  // Alle LEDs ausschalten
+  for(int i=0; i<total; i++){
+    digitalWrite(leds[i], LOW);
+  }
+}
+
+// Effekt 3: Zufälliges Blinken
+void efectoAleatorio(){
+  int led = random(0, total);
+  digitalWrite(leds[led], HIGH);
+  delay(100);
+  digitalWrite(leds[led], LOW);
+}
+
+// Hilfsfunktion: Nur einen LED einschalten
+void encenderSolo(int index){
+  // Alle LEDs ausschalten
+  for (int i=0; i<total; i++){
+    digitalWrite(leds[i], LOW);
+  }
+  // Gewählten LED einschalten
+  digitalWrite(leds[index], HIGH);
+}
