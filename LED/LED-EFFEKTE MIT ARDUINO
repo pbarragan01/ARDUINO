@@ -1,8 +1,8 @@
 int leds [] = {2,3,4,5,6,7,8,9};
 int total = 8;
 
-int modo = 0;
-unsigned long ultimoCambio = 0;
+int mode = 0;
+unsigned long finalCanvi = 0;
 
 void setup(){
   // Alle LED‑Pins als Ausgänge konfigurieren
@@ -13,7 +13,7 @@ void setup(){
 
 void loop(){
   // Modus alle 10 Sekunden wechseln
-  if (millis() - ultimoCambio > 10000){
+  if (millis() - finalCanvi > 10000){
     modo++;
     if (modo > 2) modo = 0;
     ultimoCambio = millis ();
