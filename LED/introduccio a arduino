@@ -17,32 +17,16 @@ void setup() {
 
 }
 
-void LedBlinken() {
-
-  for (int i = 0; i < 4; i++) {
-    Serial.print("i: ");
-    Serial.print(i);
-    digitalWrite(gelb_blink, HIGH);
-    delay(500);
-    digitalWrite(gelb_blink, LOW),
-    delay(500);
-
-  }
-
-  Serial.println("ROT LED LEUCHT: Bis die Wechsel Blinker warten.");
-
-}
-
 void WechselBlinker() {
   Serial.println("Wechsel Blinker aktiv");
-  for (int j = 0; j < 6; j++) {
-    Serial.print("Runde: ");
-    Serial.print(j);
+  for (int j = 0; j < 10; j++) {
+    Serial.print("COUNTER J = ");
+    Serial.println(j);
     digitalWrite(gelb, HIGH);
-    delay(500);
+    delay(200);
     digitalWrite(gelb, LOW),
     digitalWrite(rot, HIGH);
-    delay(500);
+    delay(200);
     digitalWrite(rot, LOW);
   }
 
@@ -50,13 +34,20 @@ void WechselBlinker() {
 
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
-
+void Led_Funktionen{
   LedBlinken();
   WechselBlinker();
   delay(5000);
+
 }
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  
+}
+
+
 
 // LedBlinken();
 //  delay(1000);
