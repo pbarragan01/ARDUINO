@@ -1,0 +1,64 @@
+const int gelb = 5;
+const int rot = 7;
+const int gelb_blink = 9;
+
+void setup() {
+  //-------------------------
+  //        SETUP PINS:
+  //   FÜR WECHSELBLINKER:
+  //    GELB --> PIN 5
+  //    ROT --> PIN 7
+  pinMode(gelb, OUTPUT);
+  pinMode(rot, OUTPUT);
+  //-------------------------
+  // GELBER EIGENER BLINKER --> 9  
+  pinMode(gelb_blink, OUTPUT);
+  Serial.begin(9600); // Console aktivieren
+
+}
+
+void LedBlinken() {
+
+  for (int i = 0; i < 4; i++) {
+    Serial.print("i: ");
+    Serial.print(i);
+    digitalWrite(gelb_blink, HIGH);
+    delay(500);
+    digitalWrite(gelb_blink, LOW),
+    delay(500);
+
+  }
+
+  Serial.println("ROT LED LEUCHT: Bis die Wechsel Blinker warten.");
+
+}
+
+void WechselBlinker() {
+  Serial.println("Wechsel Blinker aktiv");
+  for (int j = 0; j < 6; j++) {
+    Serial.print("Runde: ");
+    Serial.print(j);
+    digitalWrite(gelb, HIGH);
+    delay(500);
+    digitalWrite(gelb, LOW),
+    digitalWrite(rot, HIGH);
+    delay(500);
+    digitalWrite(rot, LOW);
+  }
+
+  Serial.println("Ende der Wechsel Blinker");
+
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  LedBlinken();
+  WechselBlinker();
+  delay(5000);
+}
+
+// LedBlinken();
+//  delay(1000);
+//  WechselBlinker();
+//  delay(1000);
