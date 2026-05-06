@@ -1,0 +1,42 @@
+bool status_system;
+
+void setup() {
+  // put your setup code here, to run once:
+Serial.begin(9600);
+_initMenu();
+}
+
+void loop() {
+
+  _menu();
+
+}
+
+void _menu(){
+  if(Serial.available() > 0){
+    char steuerung = Serial.read();
+    if (steuerung == ' '){
+      status_system = true;
+       Serial.println("");
+    } else if (steuerung == '\b'){
+      status_system = false;
+       Serial.println("");
+    } else{
+      Serial.println("ERROR: Falsche Taste");
+    }
+  }
+}
+
+void _initMenu(){
+  Serial.println("WAITING FOR INPUT...");
+  Serial.println(" ");
+  Serial.println("SPACE = BEGINNEN");
+  Serial.println("LÖSCHEN = ENDEN");
+}
+
+void _funktionen(){
+  // put your main code here, to run repeatedly:
+  if(!status_system) return;
+  //funktion anrufen
+  
+}
