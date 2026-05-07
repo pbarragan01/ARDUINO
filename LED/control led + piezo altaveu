@@ -16,9 +16,10 @@ void setup() {
   pinMode(rot, OUTPUT);
   //-------------------------
   // GELBER EIGENER BLINKER --> 9  
+
   pinMode(gelb_blink, OUTPUT);
   pinMode(piep, OUTPUT);
-  
+
 }
 
 // SETTING TO ARDUINO
@@ -26,37 +27,53 @@ void loop() {
   // put your main code here, to run repeatedly:
   _menu();
   _funktionen();
-  
+
 }
 
-void _initMenu(){
+void _initMenu() {
   Serial.println("WAITING FOR INPUT...");
   Serial.println(" ");
-  Serial.println("e = BEGINNEN");
-  Serial.println("a = ENDEN");
+  Serial.println("1 = BEGINNEN");
+  Serial.println("0 = ENDEN");
 }
 
-
-void _menu(){
-  if(Serial.available() > 0){
+void _menu() {
+  if (Serial.available() > 0) {
     char steuerung = Serial.read();
-    if (steuerung == 'e'){
+    if (steuerung == '1') {
       status_system = true;
-       Serial.println("");
-    } else if (steuerung == 'a'){
+      Serial.write(27);
+      Serial.print("[2J");
+      Serial.write(27);
+      Serial.print("[H");
+      Serial.println("DAS PROGRAMM WIRD EINGESCHALTET");
+      delay(2000);
+    } else if (steuerung == '0') {
       status_system = false;
-       Serial.println("");
-    } 
+      Serial.println("PROGRAMM BEENDET");
+
+    }
   }
 }
+
+//void _screencleaner() {
+  //Serial.write(27);
+  //Serial.print("[2J");
+  //Serial.write(27);
+  //Serial.print("[H");
+//}
 //______________________________________________
 //--------------- GELB BLINKER -----------------
-void LedBlinken(){
-if(!status_system){return;}
-delay(1000);
-Serial.println("LED PIN 9 WIRD BLINKEN");
-delay(1000);
-  for (int i = 0; i < 4; i++){
+
+void LedBlinken() {
+
+  delay(1000);
+  Serial.println("LED PIN 9 WIRD BLINKEN");
+  delay(1000);
+  for (int i = 0; i < 4; i++) {
+    if (!status_system) {
+      return;
+    }
     Serial.print("ACHTUNG NUMMER: ");
     Serial.println(i);
     digitalWrite(gelb_blink, HIGH);
@@ -66,24 +83,29 @@ delay(1000);
     digitalWrite(piep, LOW);
     delay(1000);
   }
-    Serial.println("INFO: Funktion gelbe Blinker beendet.");
+  Serial.println("INFO: Funktion gelbe Blinker beendet.");
 
 }
 
 //______________________________________________
 //------------- WECHSEL BLINKER-----------------
 void WechselBlinker() {
-if(!status_system){return;}
+  if (!status_system) {
+    return;
+  }
   Serial.println("Info: Wechsel Blinker aktiv");
 
   for (int j = 0; j < 10; j++) {
+    if (!status_system) {
+      return;
+    }
     Serial.print("COUNTER J = ");
     Serial.println(j);
     digitalWrite(gelb, HIGH);
     digitalWrite(piep, HIGH);
     delay(200);
     digitalWrite(gelb, LOW),
-    digitalWrite(piep, LOW);
+      digitalWrite(piep, LOW);
     digitalWrite(rot, HIGH);
     delay(200);
     digitalWrite(rot, LOW);
@@ -93,20 +115,22 @@ if(!status_system){return;}
 
 }
 
-
-void _funktionen(){
-    if(!status_system){return;}
+void _funktionen() {
+  if (!status_system) {
+    return;
+  }
   LedBlinken();
-if(!status_system){return;}
+  if (!status_system) {
+    return;
+  }
   WechselBlinker();
-if(!status_system){return;}
+  if (!status_system) {
+    return;
+  }
   delay(5000);
 
 }
 //________________________________________________
-
-
-
 
 // LedBlinken();
 //  delay(1000);
