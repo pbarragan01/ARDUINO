@@ -1,15 +1,60 @@
-
 // Motor rechts
-#define MOTOR_RF  5   // Motor rechts vorne
-#define MOTOR_RH  6   // Motor rechts hinten
+#define MOTOR_RF  5
+#define MOTOR_RH  6
 
 // Motor links
-#define MOTOR_LF 10   // Motor links vorne
-#define MOTOR_LH 11   // Motor links hinten
+#define MOTOR_LF 10
+#define MOTOR_LH 11
 
 // Ultraschallsensor
 #define TRIG_PIN 2
 #define ECHO_PIN 3
+
+// --- Funktion zum Messen des Abstands ---
+float getDistance() {
+  long duration;
+
+  digitalWrite(TRIG_PIN, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG_PIN, LOW);
+
+  duration = pulseIn(ECHO_PIN, HIGH, 30000); // 30ms Timeout
+
+  if (duration == 0) return 999; // Kein Echo → sehr weit weg
+
+  return duration / 58.0; // cm
+}
+
+// --- Motorfunktionen ---
+void forward() {
+  digitalWrite(MOTOR_RF, HIGH);
+  digitalWrite(MOTOR_RH, LOW);
+  digitalWrite(MOTOR_LF, HIGH);
+  digitalWrite(MOTOR_LH, LOW);
+}
+
+void backward() {
+  digitalWrite(MOTOR_RF, LOW);
+  digitalWrite(MOTOR_RH, HIGH);
+  digitalWrite(MOTOR_LF, LOW);
+  digitalWrite(MOTOR_LH, HIGH);
+}
+
+void turnRight() {
+  digitalWrite(MOTOR_RF, HIGH);
+  digitalWrite(MOTOR_RH, LOW);
+  digitalWrite(MOTOR_LF, LOW);
+  digitalWrite(MOTOR_LH, HIGH);
+}
+
+void stopMotors() {
+  digitalWrite(MOTOR_RF, LOW);
+  digitalWrite(MOTOR_RH, LOW);
+  digitalWrite(MOTOR_LF, LOW);
+  digitalWrite(MOTOR_LH, LOW);
+}
 
 void setup() {
   pinMode(MOTOR_RF, OUTPUT);
@@ -22,53 +67,32 @@ void setup() {
 }
 
 void loop() {
-  float dist;
-  long duration;
+  float dist = getDistance();
 
-  // === ABSTAND MESSEN ===
-  digitalWrite(TRIG_PIN, LOW);
-  delayMicroseconds(2);
-  digitalWrite(TRIG_PIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG_PIN, LOW);
-
-  duration = pulseIn(ECHO_PIN, HIGH, 3000);
-  if (duration == 0) return;
-  dist = duration / 58.0;
-
-  // === dist > 30 cm → vorwärts fahren ===
-  while (dist > 30) {
-    digitalWrite(MOTOR_RF, HIGH);
-    digitalWrite(MOTOR_RH, LOW);
-    digitalWrite(MOTOR_LF, HIGH);
-    digitalWrite(MOTOR_LH, LOW);
-
-    digitalWrite(TRIG_PIN, LOW);
-    delayMicroseconds(2);
-    digitalWrite(TRIG_PIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
-    duration = pulseIn(ECHO_PIN, HIGH, 3000);
-    if (duration == 0) break;
-    dist = duration / 58.0;
+  // --- Weiterfahren wenn >20 cm ---
+  if (dist > 20) {
+    forward();
   }
 
-  // === dist ≤ 20 cm → reagieren ===
-  while (dist <= 20) {
+  // --- Reagieren wenn <=20 cm ---
+  else {
+
+    // --- Abstand <10 cm → rückwärts ---
     if (dist < 10) {
-      digitalWrite(MOTOR_RF, HIGH);
-      digitalWrite(MOTOR_RH, LOW);
-      digitalWrite(MOTOR_LF, LOW);
-      digitalWrite(MOTOR_LH, HIGH);
+      backward();
+      delay(200);
+      stopMotors();
+      delay(100);
     }
 
-    digitalWrite(TRIG_PIN, LOW);
-    delayMicroseconds(2);
-    digitalWrite(TRIG_PIN, HIGH);
-    delayMicroseconds(10);
-    digitalWrite(TRIG_PIN, LOW);
-    duration = pulseIn(ECHO_PIN, HIGH, 3000);
-    if (duration == 0) break;
-    dist = duration / 58.0;
-  }                                                                                                                                 
+    // --- Abstand >=10 cm → rechts abbiegen ---
+    else {
+      turnRight();
+      delay(200);
+      stopMotors();
+      delay(100);
+    }
+  }
+
+  delay(30); // Sensor entlasten
 }
