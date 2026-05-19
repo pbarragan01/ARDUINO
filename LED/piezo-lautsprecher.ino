@@ -42,10 +42,6 @@ void _menu() {
     char steuerung = Serial.read();
     if (steuerung == '1') {
       status_system = true;
-      Serial.write(27);
-      Serial.print("[2J");
-      Serial.write(27);
-      Serial.print("[H");
       Serial.println("DAS PROGRAMM WIRD EINGESCHALTET");
       delay(2000);
     } else if (steuerung == '0') {
@@ -95,17 +91,12 @@ void WechselBlinker() {
   }
   Serial.println("Info: Wechsel Blinker aktiv");
 
-  for (int j = 0; j < 10; j++) {
-    if (!status_system) {
-      return;
-    }
+   for (int j = 0; j < 10; j++) {
     Serial.print("COUNTER J = ");
     Serial.println(j);
     digitalWrite(gelb, HIGH);
-    digitalWrite(piep, HIGH);
     delay(200);
     digitalWrite(gelb, LOW),
-      digitalWrite(piep, LOW);
     digitalWrite(rot, HIGH);
     delay(200);
     digitalWrite(rot, LOW);
